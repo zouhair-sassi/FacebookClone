@@ -8,69 +8,55 @@
 
 import UIKit
 
-class HomeCell: UICollectionViewCell {
+class HomeCell: UICollectionViewCell, UICollectionViewDelegate, UICollectionViewDataSource {
 
-    let userIcon : UIImageView = {
-        let imageView = UIImageView()
-        imageView.layer.cornerRadius = 25
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
 
-    let userNameLabel : UILabel = {
-        let label = UILabel()
-        label.text = "Zouhair sassi"
-        label.font = .boldSystemFont(ofSize: 18)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-
-    let datePubLabel : UILabel = {
-        let label = UILabel()
-        label.text = "22 avr.à 21:24"
-        label.textColor = .lightGray
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-
-    let pubTextLabel : UILabel = {
-        let label = UILabel()
-        label.text = "Lorem ipsum dolor sit amet"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-
-    let pubImageView : UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
+    let baseCellID = "baseCellID"
+    var homeController: MainViewController?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubviews()
+        self.initialize()
     }
 
-    required init?(coder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func prepareForReuse() {
-
+    func initialize() {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: frame.size.width - 20, height: 200)
+        layout.scrollDirection = .vertical
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 100, right: 0)
+        collectionView.register(BaseCell.self, forCellWithReuseIdentifier: baseCellID)
+        collectionView.backgroundColor = .white
+        addSubview(collectionView)
+        collectionView.pinTopToSuperview(50).pinRightToSuperview(0).pinLeftToSuperview(0).setHeight(frame.size.height).asView()
     }
 
-    func addSubviews() {
-        self.addSubview(userIcon)
-        self.addSubview(userNameLabel)
-        self.addSubview(datePubLabel)
-        self.addSubview(pubTextLabel)
-        self.addSubview(pubImageView)
-        userIcon.pinLeftToSuperview(10).pinTopToSuperview(15).setWidth(50).setHeight(50).asView()
-        userNameLabel.pinLeftToSuperview(70).pinTopToSuperview(10).setWidth(180).setHeight(30).asView()
-        datePubLabel.pinLeftToSuperview(70).pinTopToSuperview(25).setWidth(180).setHeight(50).asView()
-        pubTextLabel.pinLeftToSuperview(10).pinTopToSuperview(63).setWidth(250).setHeight(30).asView()
-        pubImageView.pinLeftToSuperview(10).pinTopToSuperview(98).pinRightToSuperview(10).pinBottomToSuperview(10).asView()
+     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        //print("11111211")
+        //homeController?.cellDidScroll(scrollView: scrollView)
     }
 
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+         return 5
+     }
 
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell : BaseCell = collectionView.dequeueReusableCell(withReuseIdentifier: baseCellID, for: indexPath) as! BaseCell
+        cell.backgroundColor = .blue
+        return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return .init(width: frame.size.width, height: 200)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    }
 }
